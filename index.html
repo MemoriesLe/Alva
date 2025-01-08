@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alva's Portfolio</title>
+  <style>
+    /* 引入字体文件并使用 font-display: swap */
+    @font-face {
+      font-family: 'STXIHEI';
+      src: url('./STXIHEI.TTF') format('truetype');
+      font-display: swap; /* 确保先显示系统字体，字体加载完毕后再切换 */
+    }
+
+    /* 页面基础样式 */
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: white; /* 背景默认白色 */
+      visibility: hidden; /* 初始时隐藏页面内容 */
+      transition: visibility 0.3s ease-in-out; /* 页面内容渐显 */
+    }
+
+    /* 名字样式 */
+    .intro-name {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 3rem;
+      font-family: 'STXIHEI', Arial, sans-serif; /* 使用字体 */
+      color: black; /* 初始名字颜色为黑色 */
+      transition: color 2s ease-in-out; /* 名字颜色渐变动画 */
+      z-index: 1000; /* 确保名字显示在最上层 */
+    }
+
+    /* 如果是手机设备，名字显示在中间偏上 */
+    @media (max-width: 768px) {
+      .intro-name {
+        top: 40%; /* 距屏幕顶部40% */
+        left: 50%; /* 居中 */
+        transform: translate(-50%, -50%); /* 水平垂直居中 */
+        font-size: 2.5rem; /* 手机端字体大小适配 */
+      }
+    }
+
+    /* 背景图片容器 */
+    .background-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1; /* 在内容后面 */
+    }
+
+    /* 单张背景图片 */
+    .background-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover; /* 图片适配窗口 */
+      background-position: center;
+      opacity: 0; /* 初始透明度为0 */
+      transition: opacity 2s ease-in-out; /* 渐隐渐显动画 */
+    }
+
+    .background-image.active {
+      opacity: 1; /* 当前显示的图片透明度为1 */
+    }
+
+    /* 字体加载完后，显示页面内容 */
+    body.fonts-loaded {
+      visibility: visible; /* 字体加载完成后显示页面内容 */
+    }
+  </style>
+</head>
+<body>
+  <!-- 名字显示部分 -->
+  <div class="intro-name">Alva</div>
+
+  <!-- 背景图片轮换容器 -->
+  <div class="background-container">
+    <div class="background-image" style="background-image: url('image1.jpg');"></div>
+    <div class="background-image" style="background-image: url('image2.jpg');"></div>
+    <div class="background-image" style="background-image: url('image3.jpg');"></div>
+  </div>
+
+  <script>
+    // 获取名字和背景图片元素
+    const introName = document.querySelector('.intro-name');
+    const images = document.querySelectorAll('.background-image');
+    let currentIndex = 0; // 当前显示的图片索引
+
+    // 渐显第一张图片，同时将名字颜色从黑色变成白色
+    setTimeout(() => {
+      images[currentIndex].classList.add('active'); // 显示第一张背景图片
+      introName.style.color = 'white'; // 名字颜色变成白色
+    }, 2000); // 延迟2秒后显示图片并改变名字颜色（名字保留2秒）
+
+    // 切换背景图片的函数
+    function changeBackground() {
+      // 移除当前图片的 "active" 类
+      images[currentIndex].classList.remove('active');
+
+      // 计算下一张图片的索引
+      currentIndex = (currentIndex + 1) % images.length;
+
+      // 添加 "active" 类到下一张图片
+      images[currentIndex].classList.add('active');
+
+      // 确保名字颜色是白色（防止闪烁）
+      introName.style.color = 'white';
+    }
+
+    // 在名字显示结束后，启动图片轮换
+    setTimeout(() => {
+      // 每隔5秒切换一次背景图片
+      setInterval(changeBackground, 5000);
+    }, 4000); // 延迟4秒（名字显示+第一张图片渐显后）启动图片轮换
+
+    // 等待字体加载完成后显示页面
+    document.fonts.ready.then(function() {
+      document.body.classList.add('fonts-loaded'); // 字体加载完成后，显示页面
+    });
+  </script>
+</body>
+</html>
